@@ -8,6 +8,6 @@
   "hasDependency": false,
   "hasOwnDaemon": false,
   "maxDependancyInstallTime": 0,
-  "documentation": "https://www.plustard.com",
-  "changelog": "https://www.encoreplustard.com"
+  "documentation": "https://github.com/kelplant/unifivideo/blob/master/README.md",
+  "changelog": "https://github.com/kelplant/unifivideo/blob/master/README.md"
 }
