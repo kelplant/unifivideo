@@ -21,18 +21,12 @@ class unifivideo extends eqLogic {
 
     }
 
-
     /**
-     * @param $unifiServer
-     * @param $srvPort
-     * @param $apiKey
-     * @param $secureSSL
+     * @param $uri
      * @return mixed
-     * @throws Exception
      */
-    public function getInfosFromServer($unifiServer, $srvPort, $apiKey, $secureSSL)
+    private function getInfosWithCurl($uri)
     {
-        $uri = 'https://' . $unifiServer . ':' . $srvPort . '/api/2.0/bootstrap?apiKey=' . $apiKey;
         $ch = curl_init();
         $options = array(
             CURLOPT_URL => $uri,
@@ -48,8 +42,21 @@ class unifivideo extends eqLogic {
         $response = curl_exec($ch);
         $e = json_decode($response);
         curl_close($ch);
+        return $e;
+    }
 
-        foreach ($e->data[0]->cameras as &$value) {
+    /**
+     * @param $unifiServer
+     * @param $srvPort
+     * @param $apiKey
+     * @param $secureSSL
+     * @return mixed
+     * @throws Exception
+     */
+    public function getInfosFromServer($unifiServer, $srvPort, $apiKey, $secureSSL)
+    {
+        $uri = 'https://' . $unifiServer . ':' . $srvPort . '/api/2.0/bootstrap?apiKey=' . $apiKey;
+        foreach ($this->getInfosWithCurl($uri)->data[0]->cameras as &$value) {
             $eqLogic = unifivideo::byLogicalId($value->_id, 'unifivideo');
             if (!is_object($eqLogic)) {
                 $eqLogic = new self();
@@ -67,74 +74,33 @@ class unifivideo extends eqLogic {
         return true;
     }
 
+
+    private function addNewCommand($logicalId, $commandName, $eqLogicId, $icon, $genericType)
+    {
+        $newCommand = $this->getCmd(null, $logicalId);
+        if (!is_object($newCommand)) {
+            $newCommand = new unifivideoCmd();
+            $newCommand->setName(__($commandName, __FILE__));
+        }
+        $newCommand->setConfiguration('request', '-');
+        $newCommand->setType('action');
+        $newCommand->setLogicalId($logicalId);
+        $newCommand->setEqLogic_id($eqLogicId);
+        $newCommand->setSubType('other');
+        $newCommand->setOrder(999);
+        $newCommand->setDisplay('icon', $icon);
+        $newCommand->setDisplay('generic_type', $genericType);
+        $newCommand->save();
+    }
+
     /**
      * @throws Exception
      */
     public function postInsert() {
-
-        $disableRecordCmd = $this->getCmd(null, 'disableRecordCmd');
-        if (!is_object($disableRecordCmd)) {
-            $disableRecordCmd = new unifivideoCmd();
-            $disableRecordCmd->setName(__('Arrêter Enregistrement', __FILE__));
-        }
-        $disableRecordCmd->setConfiguration('request', '-');
-        $disableRecordCmd->setType('action');
-        $disableRecordCmd->setLogicalId('disableRecordCmd');
-        $disableRecordCmd->setEqLogic_id($this->getId());
-        $disableRecordCmd->setSubType('other');
-        $disableRecordCmd->setOrder(999);
-        $disableRecordCmd->setDisplay('icon', '<i class="fa fa-stop"></i>');
-        $disableRecordCmd->setDisplay('generic_type', 'CAMERA_STOP');
-        $disableRecordCmd->save();
-
-
-        $enableRecordCmd = $this->getCmd(null, 'enableRecordCmd');
-        if (!is_object($enableRecordCmd)) {
-            $enableRecordCmd = new unifivideoCmd();
-            $enableRecordCmd->setName(__('Démarrer Enregistrement', __FILE__));
-        }
-
-        $enableRecordCmd->setConfiguration('request', '-');
-        $enableRecordCmd->setType('action');
-        $enableRecordCmd->setLogicalId('enableRecordCmd');
-        $enableRecordCmd->setEqLogic_id($this->getId());
-        $enableRecordCmd->setSubType('other');
-        $enableRecordCmd->setOrder(999);
-        $enableRecordCmd->setDisplay('icon', '<i class="fa fa-play"></i>');
-        $enableRecordCmd->setDisplay('generic_type', 'CAMERA_RECORD');
-        $enableRecordCmd->save();
-
-
-        $disablePrivacyFilterCmd = $this->getCmd(null, 'disablePrivacyFilterCmd');
-        if (!is_object($disablePrivacyFilterCmd)) {
-            $disablePrivacyFilterCmd = new unifivideoCmd();
-            $disablePrivacyFilterCmd->setName(__('Arrêter Privacy Filter', __FILE__));
-        }
-        $disablePrivacyFilterCmd->setConfiguration('request', '-');
-        $disablePrivacyFilterCmd->setType('action');
-        $disablePrivacyFilterCmd->setLogicalId('disablePrivacyFilterCmd');
-        $disablePrivacyFilterCmd->setEqLogic_id($this->getId());
-        $disablePrivacyFilterCmd->setSubType('other');
-        $disablePrivacyFilterCmd->setOrder(999);
-        $disablePrivacyFilterCmd->setDisplay('icon', '<i class="icon jeedom-volet-ferme"></i>');
-        $disablePrivacyFilterCmd->setDisplay('generic_type', 'CAMERA_STOP');
-        $disablePrivacyFilterCmd->save();
-
-
-        $enablePrivacyFilterCmd = $this->getCmd(null, 'enablePrivacyFilterCmd');
-        if (!is_object($enablePrivacyFilterCmd)) {
-            $enablePrivacyFilterCmd = new unifivideoCmd();
-            $enablePrivacyFilterCmd->setName(__('Démarrer Privacy Filter', __FILE__));
-        }
-        $enablePrivacyFilterCmd->setConfiguration('request', '-');
-        $enablePrivacyFilterCmd->setType('action');
-        $enablePrivacyFilterCmd->setLogicalId('enablePrivacyFilterCmd');
-        $enablePrivacyFilterCmd->setEqLogic_id($this->getId());
-        $enablePrivacyFilterCmd->setSubType('other');
-        $enablePrivacyFilterCmd->setOrder(999);
-        $enablePrivacyFilterCmd->setDisplay('icon', '<i class="icon jeedom-volet-ouvert"></i>');
-        $enablePrivacyFilterCmd->setDisplay('generic_type', 'CAMERA_RECORD');
-        $enablePrivacyFilterCmd->save();
+        $this->addNewCommand('disableRecordCmd', 'Arrêter Enregistrement', $this->getId(), '<i class="fa fa-stop"></i>', 'CAMERA_STOP');
+        $this->addNewCommand('enableRecordCmd', 'Démarrer Enregistrement', $this->getId(), '<i class="fa fa-play"></i>', 'CAMERA_RECORD');
+        $this->addNewCommand('disablePrivacyFilterCmd', 'Arrêter Privacy Filter', $this->getId(), '<i class="fa jeedom-volet-ferme"></i>', 'CAMERA_STOP');
+        $this->addNewCommand('enablePrivacyFilterCmd', 'Démarrer Privacy Filter', $this->getId(), '<i class="fa jeedom-volet-ouvert"></i>', 'CAMERA_RECORD');
     }
 
     /**
