@@ -1,0 +1,13 @@
+{
+  "id" : "unifivideo",
+  "name": "unifivideo",
+  "licence": "GPL",
+  "require": "3.0",
+  "version": "0.1",
+  "category": "security",
+  "hasDependency": false,
+  "hasOwnDaemon": false,
+  "maxDependancyInstallTime": 0,
+  "documentation": "https://www.plustard.com",
+  "changelog": "https://www.encoreplustard.com"
+}
