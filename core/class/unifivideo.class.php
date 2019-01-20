@@ -9,6 +9,9 @@
 require_once dirname(__FILE__).'/../../../../core/php/core.inc.php';
 require_once dirname(__FILE__).'/../../../../vendor/autoload.php';
 
+/**
+ * Class unifivideo
+ */
 class unifivideo extends eqLogic {
 
     /**
@@ -67,7 +70,7 @@ class unifivideo extends eqLogic {
         $disablePrivacyFilterCmd->setEqLogic_id($this->getId());
         $disablePrivacyFilterCmd->setSubType('other');
         $disablePrivacyFilterCmd->setOrder(999);
-        $disablePrivacyFilterCmd->setDisplay('icon', '<i class="fa fa-stop"></i>');
+        $disablePrivacyFilterCmd->setDisplay('icon', '<i class="icon jeedom-volet-ferme"></i>');
         $disablePrivacyFilterCmd->setDisplay('generic_type', 'CAMERA_STOP');
         $disablePrivacyFilterCmd->save();
 
@@ -83,7 +86,7 @@ class unifivideo extends eqLogic {
         $enablePrivacyFilterCmd->setEqLogic_id($this->getId());
         $enablePrivacyFilterCmd->setSubType('other');
         $enablePrivacyFilterCmd->setOrder(999);
-        $enablePrivacyFilterCmd->setDisplay('icon', '<i class="fa fa-stop"></i>');
+        $enablePrivacyFilterCmd->setDisplay('icon', '<i class="icon jeedom-volet-ouvert"></i>');
         $enablePrivacyFilterCmd->setDisplay('generic_type', 'CAMERA_STOP');
         $enablePrivacyFilterCmd->save();
     }
@@ -143,8 +146,7 @@ class unifivideo extends eqLogic {
             'json' => $payload,
             'headers' => $headers,
         ]);
-
-        return $request;
+        return (string) $request->getStatusCode();
     }
 
     /**
@@ -208,8 +210,7 @@ class unifivideo extends eqLogic {
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function disableRecordCmd() {
-        $exec = $this->recordAdmin(urlencode(config::byKey('srvIpAddress','unifivideo','',true)),urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')),'false');
-        return true;
+        return $this->recordAdmin(urlencode(config::byKey('srvIpAddress','unifivideo','',true)),urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')),'false');
     }
 
     /**
@@ -217,8 +218,7 @@ class unifivideo extends eqLogic {
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function enableRecordCmd() {
-        $exec = $this->recordAdmin(urlencode(config::byKey('srvIpAddress','unifivideo','',true)),urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')), 'true');
-        return true;
+        return $this->recordAdmin(urlencode(config::byKey('srvIpAddress','unifivideo','',true)),urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')), 'true');
     }
 
     /**
@@ -226,8 +226,7 @@ class unifivideo extends eqLogic {
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function disablePrivacyFilterCmd() {
-        $this->privacyAdmin(urlencode(config::byKey('srvIpAddress','unifivideo','',true)),urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')), 'false');
-        return true;
+        return $this->privacyAdmin(urlencode(config::byKey('srvIpAddress','unifivideo','',true)),urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')), 'false');
     }
 
     /**
@@ -235,42 +234,36 @@ class unifivideo extends eqLogic {
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function enablePrivacyFilterCmd() {
-        $this->privacyAdmin(urlencode(config::byKey('srvIpAddress','unifivideo','',true)),urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')), 'true');
-        return true;
+        return $this->privacyAdmin(urlencode(config::byKey('srvIpAddress','unifivideo','',true)),urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')), 'true');
     }
 
 }
 
 
-
+/**
+ * Class unifivideoCmd
+ */
 class unifivideoCmd extends cmd {
 
-    /*************** Attributs ***************/
-
-    /************* Static methods ************/
-
-    /**************** Methods ****************/
+    /**
+     * @param array $_options
+     * @return bool
+     */
     public function execute($_options = array()) {
         $eqLogic = $this->getEqLogic();
 
         if ($this->getLogicalId() == 'disableRecordCmd') {
-            $eqLogic->disableRecordCmd();
-            return true;
+            return $eqLogic->disableRecordCmd();
+
         }
         if ($this->getLogicalId() == 'enableRecordCmd') {
-            $eqLogic->enableRecordCmd();
-            return true;
+            return $eqLogic->enableRecordCmd();
         }
         if ($this->getLogicalId() == 'disablePrivacyFilterCmd') {
-            $eqLogic->disablePrivacyFilterCmd();
-            return true;
+            return $eqLogic->disablePrivacyFilterCmd();
         }
         if ($this->getLogicalId() == 'enablePrivacyFilterCmd') {
-            $eqLogic->enablePrivacyFilterCmd();
-            return true;
+            return $eqLogic->enablePrivacyFilterCmd();
         }
     }
-
-    /********** Getters and setters **********/
-
 }
