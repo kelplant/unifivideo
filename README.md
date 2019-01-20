@@ -1,5 +1,5 @@
 # unifivideo
-this is a simple jeedm plugin to manage Ubiquiti Unifi Cameras videos
+this is a simple jeedom (http://www.jeedom.com) plugin to manage Ubiquiti Unifi Cameras
 
 v0.1:
 - Added Core Plugin
