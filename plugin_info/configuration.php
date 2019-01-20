@@ -11,13 +11,13 @@ if (!isConnect('admin')) {
         <div class="form-group">
             <label class="col-sm-4 control-label">{{Adresse IP du serveur}}</label>
             <div class="col-sm-2">
-                <input class="configKey form-control" data-l1key="srvIpAddress" placeholder="Your Server IP Adress"/>
+                <input class="configKey form-control" data-l1key="srvIpAddress" placeholder="Your Server IP Adress (Or CDN)"/>
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-4 control-label">{{Port du serveur}}</label>
             <div class="col-sm-2">
-                <input class="configKey form-control" data-l1key="srvPort" placeholder="7080"/>
+                <input class="configKey form-control" data-l1key="srvPort" placeholder="7443 (SSL mandatory for Auto Detection)"/>
             </div>
         </div>
         <div class="form-group">

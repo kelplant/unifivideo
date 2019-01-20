@@ -19,29 +19,6 @@ try {
         ajax::success();
     }
 
-    if (init('action') == 'cleanTTScache') {
-        ajax::success();
-    }
-
-    if (init('action') == 'nowplaying') {
-        ajax::success();
-    }
-
-    if (init('action') == 'refreshall') {
-        ajax::success();
-    }
-
-
-    if (init('action') == 'sendcmd') {
-        $ret = googlecast::sendDisplayAction(init('uuid'),init('cmd'), init('options'));
-        if ($ret) {
-            ajax::success();
-        }
-        else {
-            ajax::error();
-        }
-    }
-
     throw new Exception(__('Aucune methode correspondante à : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {
