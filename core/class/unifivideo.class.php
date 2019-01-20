@@ -50,16 +50,19 @@ class unifivideo extends eqLogic {
         curl_close($ch);
 
         foreach ($e->data[0]->cameras as &$value) {
-            $eqLogic = new self();
-            $eqLogic->setLogicalId($value->_id);
-            $eqLogic->setCategory('security', 1);
-            $eqLogic->setName($value->name);
-            $eqLogic->setConfiguration('camName', $value->name);
-            $eqLogic->setConfiguration('camKey', $value->_id);
-            $eqLogic->setEqType_name('unifivideo');
-            $eqLogic->setIsVisible(1);
-            $eqLogic->setIsEnable(1);
-            $eqLogic->save();
+            $eqLogic = unifivideo::byLogicalId($value->_id, 'unifivideo');
+            if (!is_object($eqLogic)) {
+                $eqLogic = new self();
+                $eqLogic->setLogicalId($value->_id);
+                $eqLogic->setCategory('security', 1);
+                $eqLogic->setName($value->name);
+                $eqLogic->setConfiguration('camName', $value->name);
+                $eqLogic->setConfiguration('camKey', $value->_id);
+                $eqLogic->setEqType_name('unifivideo');
+                $eqLogic->setIsVisible(1);
+                $eqLogic->setIsEnable(1);
+                $eqLogic->save();
+            }
         }
         return true;
     }
