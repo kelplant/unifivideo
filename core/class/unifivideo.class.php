@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: DZ5747
+ * User: kelplant
  * Date: 20/01/2019
  * Time: 12:21
  */
@@ -54,8 +54,8 @@ class unifivideo extends eqLogic {
         $enableRecordCmd->setEqLogic_id($this->getId());
         $enableRecordCmd->setSubType('other');
         $enableRecordCmd->setOrder(999);
-        $enableRecordCmd->setDisplay('icon', '<i class="fa fa-stop"></i>');
-        $enableRecordCmd->setDisplay('generic_type', 'CAMERA_START');
+        $enableRecordCmd->setDisplay('icon', '<i class="fa fa-play"></i>');
+        $enableRecordCmd->setDisplay('generic_type', 'CAMERA_RECORD');
         $enableRecordCmd->save();
 
 
@@ -87,7 +87,7 @@ class unifivideo extends eqLogic {
         $enablePrivacyFilterCmd->setSubType('other');
         $enablePrivacyFilterCmd->setOrder(999);
         $enablePrivacyFilterCmd->setDisplay('icon', '<i class="icon jeedom-volet-ouvert"></i>');
-        $enablePrivacyFilterCmd->setDisplay('generic_type', 'CAMERA_STOP');
+        $enablePrivacyFilterCmd->setDisplay('generic_type', 'CAMERA_RECORD');
         $enablePrivacyFilterCmd->save();
     }
 
