@@ -21,6 +21,49 @@ class unifivideo extends eqLogic {
 
     }
 
+
+    /**
+     * @param $unifiServer
+     * @param $srvPort
+     * @param $apiKey
+     * @param $secureSSL
+     * @return mixed
+     * @throws Exception
+     */
+    public function getInfosFromServer($unifiServer, $srvPort, $apiKey, $secureSSL)
+    {
+        $uri = 'https://' . $unifiServer . ':' . $srvPort . '/api/2.0/bootstrap?apiKey=' . $apiKey;
+        $ch = curl_init();
+        $options = array(
+            CURLOPT_URL => $uri,
+            CURLOPT_HEADER => false,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_AUTOREFERER    => true,   // set referrer on redirect
+            CURLOPT_CONNECTTIMEOUT => 120,    // time-out on connect
+            CURLOPT_TIMEOUT        => 120,
+        );
+        curl_setopt_array($ch, $options);
+        $response = curl_exec($ch);
+        $e = json_decode($response);
+        curl_close($ch);
+
+        foreach ($e->data[0]->cameras as &$value) {
+            $eqLogic = new self();
+            $eqLogic->setLogicalId($value->_id);
+            $eqLogic->setCategory('security', 1);
+            $eqLogic->setName($value->name);
+            $eqLogic->setConfiguration('camName', $value->name);
+            $eqLogic->setConfiguration('camKey', $value->_id);
+            $eqLogic->setEqType_name('unifivideo');
+            $eqLogic->setIsVisible(1);
+            $eqLogic->setIsEnable(1);
+            $eqLogic->save();
+        }
+        return true;
+    }
+
     /**
      * @throws Exception
      */
@@ -139,7 +182,7 @@ class unifivideo extends eqLogic {
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    private function sendToServer($uri, $payload, $headers)
+    private function sendPutToServer($uri, $payload, $headers)
     {
         $client = new \GuzzleHttp\Client();
         $request = $client->request('PUT', $uri, [
@@ -172,7 +215,7 @@ class unifivideo extends eqLogic {
             'enablePrivacyMasks' => $actionResult,
         );
 
-        return $this->sendToServer($uri, $payload, $headers);
+        return $this->sendPutToServer($uri, $payload, $headers);
     }
 
     /**
