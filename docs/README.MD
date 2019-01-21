@@ -27,6 +27,6 @@ unifivideo requires [jeedom](https://www.jeedom.com/) v3+ to run.
 Install thought jeedom market or
 
 ```sh
-$ cd pluglin
+$ cd plugin
 $ git clone https://github.com/kelplant/unifivideo.git
 ```
