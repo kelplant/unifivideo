@@ -26,6 +26,23 @@ $eqLogics = eqLogic::byType($plugin->getId());
     <div class="col-lg-10 col-md-9 col-sm-8 eqLogicThumbnailDisplay">
         <legend><i class="fa fa-cog"></i> {{Gestion}}</legend>
         <div class="eqLogicThumbnailContainer">
+            <?php
+            if (config::byKey('include_mode', 'unifivideo', 0) == 1) {
+                echo '<div class="cursor changeIncludeState include card" data-mode="1" data-state="0" style="background-color : #ffffff; height : 140px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >';
+                echo '<center class="includeicon">';
+                echo '<i class="fa fa-spinner fa-pulse" style="font-size : 6em;color:red"></i>';
+                echo '</center>';
+                echo '<span class="includeicon_text" style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:red;font-weight: bold;"><center>{{Arrêter Scan}}</center></span>';
+                echo '</div>';
+            } else {
+                echo '<div class="cursor changeIncludeState include card" data-mode="1" data-state="1" style="background-color : #ffffff; height : 140px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >';
+                echo '<center class="includeicon">';
+                echo '<i class="fa fa-bullseye" style="font-size : 6em;color:#94ca02;"></i>';
+                echo '</center>';
+                echo '<span class="includeicon_text" style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#94ca02";font-weight: normal;><center>{{Lancer Scan}}</center></span>';
+                echo '</div>';
+            }
+            ?>
             <!-- Bouton d ajout d un objet -->
             <div class="cursor eqLogicAction" data-action="add"
                  style="background-color : #ffffff; height : 140px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
