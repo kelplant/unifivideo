@@ -18,6 +18,10 @@ Si un port non sécurisé (SSL) est utilisé il faudra ajouter manuellement les 
 >
 > le plugin fonctionne aussi bien en liaison avec un serveur interne qu'avec un serveur externe, une adresse IP ou un FQDN
 
+Attention, pensez à bien définir les filtres de privacy dans l'interface Unifi Video du NVR
+
+![configuration09](images/configuration09.PNG)
+
 Configuration
 =============
 Après le téléchargement du plugin, vous n'avez plus qu'a l'activer et à remplir les Informations de configurations suivantes :
@@ -35,6 +39,36 @@ Utilisation
 
 Ajout Automatique des Caméras
 -----------------------------
+Une fois la configuration effectuée vous pouvez si vous le souhaitez lancer la remontée automatique des caméras.
+Pour cela il suffit de cliquer sur :
+
+![configuration32](images/configuration03.PNG)
+
+Quelques secondes plus tard vous devriez voir apparaitre l'ensemble de vos caméras correctement configurées
+
+![configuration06](images/configuration06.PNG)
+
 
 Ajout Manuel des Caméras
 -----------------------------
+Pour ajouter une caméra manuellement il va falloi aller récupérer la clé de la caméra dans l'IP
+Pour cela ouvrez votre interface unifi video et selectionner la caméra que vous souhaitez manager.
+Dans l'onglet vidéo, cherchez la partie RTMP ou RTSP service et activer la si ce n'est pas fait (vous pouvez desactiver ensuite l'option)
+Nous allons nous intéresser au champ URL et plus particulière à ce qui se trouve derrière /live/
+Nous prendrons donc la chaine en  nous arretant ensuite avant le _ qui se trouve à la fin ce qui dans notre exemple nous donne :
+5c3679c5848e6d2e3f2dfbef
+
+![configuration08](images/configuration08.PNG)
+
+Une fois cette information récupérée vous pouvez commencer à créer votre nouvelle caméra en cliquant sur le bouton "Ajouter"
+
+![configuration04](images/configuration04.PNG)
+
+Il ne vous reste plus qu'a compléter les informations de la caméra
+
+- Nom de l'équipement : Nom dans Jeedom
+- Objet parent : Objet auqel la caméra est rattachée
+- Camera name : Nom de la caméra dans le NVR unifi
+- Camera Key : Clé recupérée précédement
+
+![configuration07](images/configuration07.PNG)
