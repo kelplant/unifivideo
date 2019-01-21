@@ -26,5 +26,11 @@ if (!isConnect('admin')) {
                 <input class="configKey form-control" data-l1key="apiKey" placeholder="Your Api Key"/>
             </div>
         </div>
+        <div class="form-group">
+            <label class="col-sm-4 control-label">{{Connexion SSL ?}}</label>
+            <div class="col-sm-2">
+                <input type="checkbox" class="configKey" data-l1key="isSsl" checked/>
+            </div>
+        </div>
     </fieldset>
 </form>

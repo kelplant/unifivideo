@@ -75,6 +75,14 @@ class unifivideo extends eqLogic {
     }
 
 
+    /**
+     * @param $logicalId
+     * @param $commandName
+     * @param $eqLogicId
+     * @param $icon
+     * @param $genericType
+     * @throws Exception
+     */
     private function addNewCommand($logicalId, $commandName, $eqLogicId, $icon, $genericType)
     {
         $newCommand = $this->getCmd(null, $logicalId);
@@ -153,7 +161,7 @@ class unifivideo extends eqLogic {
      */
     private function sendPutToServer($uri, $payload, $headers)
     {
-        $client = new \GuzzleHttp\Client();
+        $client = new \GuzzleHttp\Client(array('curl' => array( CURLOPT_SSL_VERIFYPEER => false ),'verify' => false));
         $request = $client->request('PUT', $uri, [
             'json' => $payload,
             'headers' => $headers,
@@ -162,6 +170,20 @@ class unifivideo extends eqLogic {
     }
 
     /**
+     * @param $isSsl
+     * @return string
+     */
+    private function returnHead($isSsl)
+    {
+        if($isSsl == 1) {
+            $head = 'https';
+        } else {
+            $head = 'http';
+        }
+        return $head;
+    }
+    /**
+     * @param $isSsl
      * @param $unifiServer
      * @param $srvPort
      * @param $camKey
@@ -171,9 +193,9 @@ class unifivideo extends eqLogic {
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function privacyAdmin($unifiServer, $srvPort, $camKey, $apikey, $cameraName, $actionResult)
+    public function privacyAdmin($isSsl, $unifiServer, $srvPort, $camKey, $apikey, $cameraName, $actionResult)
     {
-        $uri = 'http://' . $unifiServer . ':'. $srvPort .'/api/2.0/camera/' . $camKey . '?apiKey=' . $apikey;
+        $uri = $this->returnHead($isSsl) . '://' . $unifiServer . ':'. $srvPort .'/api/2.0/camera/' . $camKey . '?apiKey=' . $apikey;
         $headers = [
             'Accept' => 'application/json',
             'Referer' => '(intentionally removed)',
@@ -188,6 +210,7 @@ class unifivideo extends eqLogic {
     }
 
     /**
+     * @param $isSsl
      * @param $unifiServer
      * @param $srvPort
      * @param $camKey
@@ -197,9 +220,9 @@ class unifivideo extends eqLogic {
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function recordAdmin($unifiServer, $srvPort, $camKey, $apikey, $cameraName, $actionResult)
+    public function recordAdmin($isSsl, $unifiServer, $srvPort, $camKey, $apikey, $cameraName, $actionResult)
     {
-        $uri = 'http://' . $unifiServer . ':' . $srvPort . '/api/2.0/camera/' . $camKey . '?apiKey=' . $apikey;
+        $uri = $this->returnHead($isSsl) . 'http://' . $unifiServer . ':' . $srvPort . '/api/2.0/camera/' . $camKey . '?apiKey=' . $apikey;
         $headers = [
             'Accept' => 'application/json',
             'Referer' => '(intentionally removed)',
@@ -214,7 +237,7 @@ class unifivideo extends eqLogic {
             )
         );
 
-        return $this->sendToServer($uri, $payload, $headers);;
+        return $this->sendToServer($uri, $payload, $headers);
     }
 
     /**
@@ -222,7 +245,7 @@ class unifivideo extends eqLogic {
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function disableRecordCmd() {
-        return $this->recordAdmin(urlencode(config::byKey('srvIpAddress','unifivideo','',true)),urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')),'false');
+        return $this->recordAdmin(urlencode(config::byKey('isSsl','unifivideo','',true)), urlencode(config::byKey('srvIpAddress','unifivideo','',true)), urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')),'false');
     }
 
     /**
@@ -230,7 +253,7 @@ class unifivideo extends eqLogic {
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function enableRecordCmd() {
-        return $this->recordAdmin(urlencode(config::byKey('srvIpAddress','unifivideo','',true)),urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')), 'true');
+        return $this->recordAdmin(urlencode(config::byKey('isSsl','unifivideo','',true)), urlencode(config::byKey('srvIpAddress','unifivideo','',true)), urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')), 'true');
     }
 
     /**
@@ -238,7 +261,7 @@ class unifivideo extends eqLogic {
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function disablePrivacyFilterCmd() {
-        return $this->privacyAdmin(urlencode(config::byKey('srvIpAddress','unifivideo','',true)),urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')), 'false');
+        return $this->privacyAdmin(urlencode(config::byKey('isSsl','unifivideo','',true)), urlencode(config::byKey('srvIpAddress','unifivideo','',true)), urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')), 'false');
     }
 
     /**
@@ -246,7 +269,7 @@ class unifivideo extends eqLogic {
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function enablePrivacyFilterCmd() {
-        return $this->privacyAdmin(urlencode(config::byKey('srvIpAddress','unifivideo','',true)),urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')), 'true');
+        return $this->privacyAdmin(urlencode(config::byKey('isSsl','unifivideo','',true)), urlencode(config::byKey('srvIpAddress','unifivideo','',true)), urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')), 'true');
     }
 
 }
