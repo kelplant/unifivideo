@@ -56,7 +56,7 @@ Pour cela ouvrez votre interface unifi video et selectionner la caméra que vous
 Dans l'onglet vidéo, cherchez la partie RTMP ou RTSP service et activer la si ce n'est pas fait (vous pouvez desactiver ensuite l'option)
 Nous allons nous intéresser au champ URL et plus particulière à ce qui se trouve derrière /live/
 Nous prendrons donc la chaine en  nous arretant ensuite avant le _ qui se trouve à la fin ce qui dans notre exemple nous donne :
-5c3679c5848e6d2e3f2dfbef
+dh45ksdhmln5k3s
 
 ![configuration08](images/configuration08.PNG)
 
