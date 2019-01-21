@@ -2,10 +2,31 @@
 
 This is a simple jeedom (http://www.jeedom.com) plugin to manage Ubiquiti Unifi Cameras
 
-v0.1:
+## v0.2:
+- Added Auto Scan (Auto Add camera from Unifi Video Server)
+
+## v0.1:
 - Added Core Plugin
 - Added Privacy Management
 - Added Recording Management
 
-v0.2:
-- Added Auto Scan (Auto Add camera from Unifi Video Server)
+
+### Tech
+unifivideo uses a number of open source projects to work properly:
+* [guzzleHttp] - cUrl libs
+* [Twitter Bootstrap]
+* [node.js]
+* [Doctrine] 
+* [composer]
+* [jQuery] 
+
+
+### Installation
+unifivideo requires [jeedom](https://www.jeedom.com/) v3+ to run.
+
+Install thought jeedom market or
+
+```sh
+$ cd pluglin
+$ git clone https://github.com/kelplant/unifivideo.git
+```
