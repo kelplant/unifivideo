@@ -16,23 +16,45 @@ class unifivideoCmd extends cmd {
      */
     public function execute($_options = array()) {
         $eqLogic = $this->getEqLogic();
-        if ($this->getLogicalId() == 'takeScreenshot') {
-            return $eqLogic->takeScreenshotCmd();
+
+        switch ($this->getLogicalId()) {
+            case 'takeScreenshot':
+                return $eqLogic->takeScreenshotCmd();
+                break;
+            case 'volumeSet':
+                return $eqLogic->volumeSetCmd($_options[ 'slider' ]);
+                break;
+            case 'disableRecordCmd':
+                return $eqLogic->disableRecordCmd($_options);
+                break;
+            case 'enableRecordCmd':
+                return $eqLogic->enableRecordCmd();
+                break;
+            case 'disablePrivacyFilterCmd':
+                return $eqLogic->disablePrivacyFilterCmd();
+                break;
+            case 'enablePrivacyFilterCmd':
+                return $eqLogic->enablePrivacyFilterCmd($_options);
+                break;
         }
-        if ($this->getLogicalId() == 'volumeSet') {
-            return $eqLogic->volumeSetCmd($_options[ 'slider' ]);
-        }
-        if ($this->getLogicalId() == 'disableRecordCmd') {
-            return $eqLogic->disableRecordCmd($_options);
-        }
-        if ($this->getLogicalId() == 'enableRecordCmd') {
-            return $eqLogic->enableRecordCmd();
-        }
-        if ($this->getLogicalId() == 'disablePrivacyFilterCmd') {
-            return $eqLogic->disablePrivacyFilterCmd();
-        }
-        if ($this->getLogicalId() == 'enablePrivacyFilterCmd') {
-            return $eqLogic->enablePrivacyFilterCmd();
-        }
+
+//        if ($this->getLogicalId() == 'takeScreenshot') {
+//            return $eqLogic->takeScreenshotCmd();
+//        }
+//        if ($this->getLogicalId() == 'volumeSet') {
+//            return $eqLogic->volumeSetCmd($_options[ 'slider' ]);
+//        }
+//        if ($this->getLogicalId() == 'disableRecordCmd') {
+//            return $eqLogic->disableRecordCmd($_options);
+//        }
+//        if ($this->getLogicalId() == 'enableRecordCmd') {
+//            return $eqLogic->enableRecordCmd();
+//        }
+//        if ($this->getLogicalId() == 'disablePrivacyFilterCmd') {
+//            return $eqLogic->disablePrivacyFilterCmd();
+//        }
+//        if ($this->getLogicalId() == 'enablePrivacyFilterCmd') {
+//            return $eqLogic->enablePrivacyFilterCmd();
+//        }
     }
 }
