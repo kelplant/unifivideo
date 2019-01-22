@@ -13,11 +13,34 @@ require_once dirname(__FILE__).'/../../../../vendor/autoload.php';
  * Class unifivideo
  */
 class unifivideo extends eqLogic {
-     /**
+
+    /**
+     * @param $repertoire
+     */
+    private function testFolderCreateIfNotExist($repertoire)
+    {
+        if(is_dir ($repertoire) === false) {
+            mkdir($repertoire, 0755);
+        };
+    }
+
+    /**
+     * @param $file
+     * @param $content
+     */
+    private function writeTofile($file, $content)
+    {
+        $fp = fopen($file, 'w+');
+        fwrite($fp, $content);
+        fclose($fp);
+    }
+
+    /**
      * @param $uri
+     * @param string $additionalParam
      * @return mixed
      */
-    private function getInfosWithCurl($uri)
+    private function getInfosWithCurl($uri, $additionalParam = 'decoded')
     {
         $ch = curl_init();
         $options = array(
@@ -32,7 +55,13 @@ class unifivideo extends eqLogic {
         );
         curl_setopt_array($ch, $options);
         $response = curl_exec($ch);
-        $e = json_decode($response);
+
+        if ($additionalParam == 'undecoded') {
+            $e = $response;
+
+        } else {
+            $e = json_decode($response);
+        }
         curl_close($ch);
         return $e;
     }
@@ -95,7 +124,9 @@ class unifivideo extends eqLogic {
         if($type == 'action' && $subType == 'slider') {
             $newCommand->setConfiguration('minValue', 0);
             $newCommand->setConfiguration('maxValue', 100);
-            $newCommand->setConfiguration('lastCmdValue', 50);
+        }
+        if($type == 'action') {
+            $newCommand->setConfiguration('lastCmdValue', null);
             $newCommand->setValue($optionalParam);
         }
         if($type == 'info' && $subType == 'numeric') {
@@ -110,9 +141,20 @@ class unifivideo extends eqLogic {
         $newCommand->setDisplay('icon', $icon);
         $newCommand->setDisplay('generic_type', $genericType);
         $newCommand->save();
-        if($type == 'info' && $subType == 'numeric') {
-            return $newCommand->getId();
-        }
+
+        return $newCommand->getId();
+
+    }
+
+    /**
+     * @param $logicalId1
+     * @param $logicalId2
+     * @param $configurationValue
+     */
+    private function updateCmdInfos($logicalId1, $logicalId2, $configurationValue)
+    {
+        $this->getCmd(null, $logicalId1)->setConfiguration('lastCmdValue', $configurationValue)->save();
+        $this->getCmd(null, $logicalId2)->setValue($configurationValue)->save();
     }
 
     /**
@@ -127,12 +169,14 @@ class unifivideo extends eqLogic {
      */
     public function postInsert()
     {
-        $this->addActionOtherCommand('disableRecordCmd', 'Arrêter Enregistrement', 'action', 'other', $this->getId(), '<i class="fa fa-stop"></i>', 'CAMERA_STOP', 1, 1);
-        $this->addActionOtherCommand('enableRecordCmd', 'Démarrer Enregistrement', 'action', 'other', $this->getId(), '<i class="fa fa-play"></i>', 'CAMERA_RECORD', 2, 1);
-        $this->addActionOtherCommand('disablePrivacyFilterCmd', 'Arrêter Privacy Filter', 'action', 'other', $this->getId(), '<i class="fa jeedom-volet-ferme"></i>', 'CAMERA_STOP', 3, 1);
-        $this->addActionOtherCommand('enablePrivacyFilterCmd', 'Démarrer Privacy Filter', 'action', 'other', $this->getId(), '<i class="fa jeedom-volet-ouvert"></i>', 'CAMERA_RECORD', 4, 1);
-        $volAsVolume = $this->addActionOtherCommand('volume_level', 'Volume', 'info', 'numeric', $this->getId(), '<i class="fa jeedom-volet-ouvert"></i>', 'LIGHT_STATE', 5, 0, '%');
-        $this->addActionOtherCommand('volume_set', 'Volume Niveau', 'action', 'slider', $this->getId(), '<i class="fa fa-volume-control-phone"></i>', '', 6, 1, $volAsVolume);
+        $recordingStateInfoCmdId = $this->addActionOtherCommand('recordState', 'Etat Enregistrement', 'info', 'binary', $this->getId(), '<i class="fa jeedom-volet-ouvert"></i>', 'CAMERA_RECORD_STATE', 10, 0);
+        $this->addActionOtherCommand('disableRecordCmd', 'Arrêter Enregistrement', 'action', 'other', $this->getId(), '<i class="fa fa-stop"></i>', 'CAMERA_STOP', 20, 1, $recordingStateInfoCmdId);
+        $this->addActionOtherCommand('enableRecordCmd', 'Démarrer Enregistrement', 'action', 'other', $this->getId(), '<i class="fa fa-play"></i>', 'CAMERA_RECORD', 30, 1, $recordingStateInfoCmdId);
+        $privacyStateInfoCmdId = $this->addActionOtherCommand('privacyState', 'Etat Filtre Confidentialité', 'info', 'binary', $this->getId(), '<i class="fa jeedom-volet-ouvert"></i>', 'CAMERA_RECORD_STATE', 10, 0);
+        $this->addActionOtherCommand('disablePrivacyFilterCmd', 'Arrêter Privacy Filter', 'action', 'other', $this->getId(), '<i class="fa jeedom-volet-ferme"></i>', 'CAMERA_STOP', 50, 1, $privacyStateInfoCmdId);
+        $this->addActionOtherCommand('enablePrivacyFilterCmd', 'Démarrer Privacy Filter', 'action', 'other', $this->getId(), '<i class="fa jeedom-volet-ouvert"></i>', 'CAMERA_RECORD', 60, 1, $privacyStateInfoCmdId);
+        $volumeStateInfoCmdId = $this->addActionOtherCommand('volumeLevel', 'Volume', 'info', 'numeric', $this->getId(), '<i class="fa jeedom-volet-ouvert"></i>', 'LIGHT_STATE', 70, 0, '%');
+        $this->addActionOtherCommand('volumeSet', 'Volume Niveau', 'action', 'slider', $this->getId(), '<i class="fa fa-volume-control-phone"></i>', '', 80, 1, $volumeStateInfoCmdId);
     }
 
     /**
@@ -146,7 +190,7 @@ class unifivideo extends eqLogic {
      *
      */
     public function postSave() {
-
+        $this->getSnapshotFromServer(config::byKey('isSsl','unifivideo','',true), config::byKey('srvIpAddress','unifivideo','',true), config::byKey('srvPort','unifivideo','',true), $this->getConfiguration('camKey'), config::byKey('apiKey'), $this->getConfiguration('camName'));
     }
 
     /**
@@ -178,6 +222,38 @@ class unifivideo extends eqLogic {
     }
 
     /**
+     * @param $isSsl
+     * @param $unifiServer
+     * @param $srvPort
+     * @param $camKey
+     * @param $apiKey
+     * @param $camName
+     * @return mixed
+     */
+    public function getSnapshotFromServer($isSsl, $unifiServer, $srvPort, $camKey, $apiKey, $camName)
+    {
+        $uri = $this->returnHead($isSsl) . '://' . $unifiServer . ':' . $srvPort . '/api/2.0/snapshot/camera/'.$camKey.'?force=true&apiKey=' . $apiKey;
+        $response = $this->getInfosWithCurl($uri, 'undecoded');
+        if($_SERVER['PHP_SELF'] == '/plugins/unifivideo/core/ajax/unifivideo.ajax.php') {
+            $repertoire = "../../captures/";
+        } else {
+            $repertoire = "../../plugins/unifivideo/captures/";
+        }
+        $this->testFolderCreateIfNotExist($repertoire);
+        $this->writeTofile($repertoire . $camName . '_current.jpg', $response);
+        $this->testFolderCreateIfNotExist($repertoire . $camName);
+        $repertoireToFetch = opendir($repertoire . $camName);
+        $file_list = array();
+        $dont_show = array("", "php", ".", "..");
+        while ($file = readdir($repertoireToFetch)) {
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
+            if (!in_array($ext, $dont_show)) array_push($file_list, substr($file, strlen($camName)+1, 4));
+        }
+        $this->writeTofile($repertoire . $camName . '/' .  $camName . '_' . str_pad(max($file_list) + 1, 4, '0', STR_PAD_LEFT) . '.jpg', $response);
+        return $response;
+    }
+
+    /**
      * @param $unifiServer
      * @param $srvPort
      * @param $apiKey
@@ -185,7 +261,7 @@ class unifivideo extends eqLogic {
      * @return mixed
      * @throws Exception
      */
-    public function getInfosFromServer($unifiServer, $srvPort, $apiKey, $secureSSL)
+    public function getInfosFromServer($isSsl, $unifiServer, $srvPort, $apiKey)
     {
         $uri = 'https://' . $unifiServer . ':' . $srvPort . '/api/2.0/bootstrap?apiKey=' . $apiKey;
         foreach ($this->getInfosWithCurl($uri)->data[0]->cameras as &$value) {
@@ -202,6 +278,7 @@ class unifivideo extends eqLogic {
                 $eqLogic->setIsEnable(1);
                 $eqLogic->save();
             }
+            $this->getSnapshotFromServer($isSsl, $unifiServer, $srvPort, $value->_id, $apiKey, $value->name);
         }
         return true;
     }
@@ -293,6 +370,7 @@ class unifivideo extends eqLogic {
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function disableRecordCmd() {
+        $this->updateCmdInfos('disableRecordCmd', 'recordState', 0);
         return $this->recordAdmin(urlencode(config::byKey('isSsl','unifivideo','',true)), urlencode(config::byKey('srvIpAddress','unifivideo','',true)), urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')),urlencode('false'));
     }
 
@@ -301,6 +379,7 @@ class unifivideo extends eqLogic {
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function enableRecordCmd() {
+        $this->updateCmdInfos('enableRecordCmd', 'recordState', 1);
         return $this->recordAdmin(urlencode(config::byKey('isSsl','unifivideo','',true)), urlencode(config::byKey('srvIpAddress','unifivideo','',true)), urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')), urlencode('true'));
     }
 
@@ -309,6 +388,7 @@ class unifivideo extends eqLogic {
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function disablePrivacyFilterCmd() {
+        $this->updateCmdInfos('disablePrivacyFilterCmd', 'privacyState', 0);
         return $this->privacyAdmin(urlencode(config::byKey('isSsl','unifivideo','',true)), urlencode(config::byKey('srvIpAddress','unifivideo','',true)), urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')), urlencode('false'));
     }
 
@@ -317,6 +397,7 @@ class unifivideo extends eqLogic {
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function enablePrivacyFilterCmd() {
+        $this->updateCmdInfos('enablePrivacyFilterCmd', 'privacyState', 1);
         return $this->privacyAdmin(urlencode(config::byKey('isSsl','unifivideo','',true)), urlencode(config::byKey('srvIpAddress','unifivideo','',true)), urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')), urlencode('true'));
     }
 
@@ -326,8 +407,7 @@ class unifivideo extends eqLogic {
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function volumeSetCmd($micVolume) {
-        $this->getCmd(null, 'volume_set')->setConfiguration('lastCmdValue', $micVolume)->save();
-        $this->getCmd(null, 'volume_level')->setValue($micVolume)->save();
+        $this->updateCmdInfos('volumeSet', 'volumeLevel', $micVolume);
         return $this->micAdmin(urlencode(config::byKey('isSsl','unifivideo','',true)), urlencode(config::byKey('srvIpAddress','unifivideo','',true)), urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')), $micVolume);
     }
 }
@@ -343,11 +423,11 @@ class unifivideoCmd extends cmd {
      */
     public function execute($_options = array()) {
         $eqLogic = $this->getEqLogic();
-        if ($this->getLogicalId() == 'volume_set') {
+        if ($this->getLogicalId() == 'volumeSet') {
             return $eqLogic->volumeSetCmd($_options['slider']);
         }
         if ($this->getLogicalId() == 'disableRecordCmd') {
-            return $eqLogic->disableRecordCmd();
+            return $eqLogic->disableRecordCmd($_options);
         }
         if ($this->getLogicalId() == 'enableRecordCmd') {
             return $eqLogic->enableRecordCmd();
