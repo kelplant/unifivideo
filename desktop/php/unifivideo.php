@@ -140,7 +140,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 <?php
                                 foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
                                     echo '<label class="checkbox-inline">';
-                                    echo '<input type="checkbox" class="eqLogicAttr" data-l1key="category" data-l2key="' . $key . '" />' . $value['name'];
+                                    echo '<input type="checkbox" class="eqLogicAttr" data-l1key="category" data-l2key="' . $key . '" />' . $value[ 'name' ];
                                     echo '</label>';
                                 }
                                 ?>
@@ -160,7 +160,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             <div class="col-sm-9 callback">
         <span>
 	<?php
-    echo network::getNetworkAccess('external') . '/core/api/jeeApi.php?plugin=unifivideo&apikey='.jeedom::getApiKey($plugin->getId()).'&type=unifivideo&id=#cmd_id#&value=#value#';
+    echo network::getNetworkAccess('external') . '/core/api/jeeApi.php?plugin=unifivideo&apikey=' . jeedom::getApiKey($plugin->getId()) . '&type=unifivideo&id=#cmd_id#&value=#value#';
     ?>
 	</span>
                             </div>
@@ -186,5 +186,5 @@ $eqLogics = eqLogic::byType($plugin->getId());
 </div>
 
 
-<?php include_file('desktop', 'unifivideo', 'js', 'unifivideo');?>
-<?php include_file('core', 'plugin.template', 'js');?>
+<?php include_file('desktop', 'unifivideo', 'js', 'unifivideo'); ?>
+<?php include_file('core', 'plugin.template', 'js'); ?>
