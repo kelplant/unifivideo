@@ -173,8 +173,8 @@ class unifivideo extends eqLogic {
         $this->addActionOtherCommand('disableRecordCmd', 'Arrêter Enregistrement', 'action', 'other', $this->getId(), '<i class="fa fa-stop"></i>', 'CAMERA_STOP', 20, 1, $recordingStateInfoCmdId);
         $this->addActionOtherCommand('enableRecordCmd', 'Démarrer Enregistrement', 'action', 'other', $this->getId(), '<i class="fa fa-play"></i>', 'CAMERA_RECORD', 30, 1, $recordingStateInfoCmdId);
         $privacyStateInfoCmdId = $this->addActionOtherCommand('privacyState', 'Etat Filtre Confidentialité', 'info', 'binary', $this->getId(), '<i class="fa jeedom-volet-ouvert"></i>', 'CAMERA_RECORD_STATE', 10, 0);
-        $this->addActionOtherCommand('disablePrivacyFilterCmd', 'Arrêter Privacy Filter', 'action', 'other', $this->getId(), '<i class="fa jeedom-volet-ferme"></i>', 'CAMERA_STOP', 50, 1, $privacyStateInfoCmdId);
-        $this->addActionOtherCommand('enablePrivacyFilterCmd', 'Démarrer Privacy Filter', 'action', 'other', $this->getId(), '<i class="fa jeedom-volet-ouvert"></i>', 'CAMERA_RECORD', 60, 1, $privacyStateInfoCmdId);
+        $this->addActionOtherCommand('disablePrivacyFilterCmd', 'Arrêter Filtre Confidentialité', 'action', 'other', $this->getId(), '<i class="fa jeedom-volet-ferme"></i>', 'CAMERA_STOP', 50, 1, $privacyStateInfoCmdId);
+        $this->addActionOtherCommand('enablePrivacyFilterCmd', 'Démarrer Filtre Confidentialité', 'action', 'other', $this->getId(), '<i class="fa jeedom-volet-ouvert"></i>', 'CAMERA_RECORD', 60, 1, $privacyStateInfoCmdId);
         $volumeStateInfoCmdId = $this->addActionOtherCommand('volumeLevel', 'Volume', 'info', 'numeric', $this->getId(), '<i class="fa jeedom-volet-ouvert"></i>', 'LIGHT_STATE', 70, 0, '%');
         $this->addActionOtherCommand('volumeSet', 'Volume Niveau', 'action', 'slider', $this->getId(), '<i class="fa fa-volume-control-phone"></i>', '', 80, 1, $volumeStateInfoCmdId);
     }

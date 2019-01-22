@@ -97,7 +97,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                 <form class="form-horizontal">
                     <fieldset>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">{{Nom de l'équipement virtual}}</label>
+                            <label class="col-sm-2 control-label">{{Nom de l'équipement sous Jeedom}}</label>
                             <div class="col-sm-3">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display : none;" />
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de l'équipement}}"/>
@@ -117,7 +117,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             </div>
                         </div>
                         <div class="form-group expertModeVisible">
-                            <label class="col-sm-2 control-label">{{Camera Name}}</label>
+                            <label class="col-sm-2 control-label">{{Nom de la Caméra (NVR)}}</label>
                             <div class="col-sm-2">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="camName" placeholder="{{Camera Name}}"/>
                             </div>
@@ -126,7 +126,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             </div>
                         </div>
                         <div class="form-group expertModeVisible">
-                            <label class="col-sm-2 control-label">{{Camera Key}}</label>
+                            <label class="col-sm-2 control-label">{{Clé Secrète de la Caméra (NVR)}}</label>
                             <div class="col-sm-2">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="camKey" placeholder="{{Camera Key}}"/>
                             </div>

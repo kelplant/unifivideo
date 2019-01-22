@@ -21,7 +21,7 @@ if (!isConnect('admin')) {
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-4 control-label">{{API key}}</label>
+            <label class="col-sm-4 control-label">{{Clé API}}</label>
             <div class="col-sm-2">
                 <input class="configKey form-control" data-l1key="apiKey" placeholder="Your Api Key"/>
             </div>
