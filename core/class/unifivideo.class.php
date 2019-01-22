@@ -289,7 +289,7 @@ class unifivideo extends eqLogic {
     }
 
     /**
-     * @return bool
+     * @return string
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function disableRecordCmd() {
@@ -297,7 +297,7 @@ class unifivideo extends eqLogic {
     }
 
     /**
-     * @return bool
+     * @return string
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function enableRecordCmd() {
@@ -305,7 +305,7 @@ class unifivideo extends eqLogic {
     }
 
     /**
-     * @return bool
+     * @return string
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function disablePrivacyFilterCmd() {
@@ -313,7 +313,7 @@ class unifivideo extends eqLogic {
     }
 
     /**
-     * @return bool
+     * @return string
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function enablePrivacyFilterCmd() {
@@ -322,10 +322,12 @@ class unifivideo extends eqLogic {
 
     /**
      * @param $micVolume
-     * @return bool
+     * @return string
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function volumeSetCmd($micVolume) {
+        $this->getCmd(null, 'volume_set')->setConfiguration('lastCmdValue', $micVolume)->save();
+        $this->getCmd(null, 'volume_level')->setValue($micVolume)->save();
         return $this->micAdmin(urlencode(config::byKey('isSsl','unifivideo','',true)), urlencode(config::byKey('srvIpAddress','unifivideo','',true)), urlencode(config::byKey('srvPort','unifivideo','',true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey','unifivideo','',true)), urlencode($this->getConfiguration('camName')), $micVolume);
     }
 }
@@ -341,9 +343,7 @@ class unifivideoCmd extends cmd {
      */
     public function execute($_options = array()) {
         $eqLogic = $this->getEqLogic();
-
         if ($this->getLogicalId() == 'volume_set') {
-            //$second = $this->byId($this->getValue());
             return $eqLogic->volumeSetCmd($_options['slider']);
         }
         if ($this->getLogicalId() == 'disableRecordCmd') {
