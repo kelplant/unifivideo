@@ -14,8 +14,8 @@ try {
     ajax::init();
 
     if (init('action') == 'changeIncludeState') {
-        $test = new unifivideo();
-        $test->getInfosFromServer(urlencode(config::byKey('isSsl', 'unifivideo', '', true)), urlencode(config::byKey('srvIpAddress', 'unifivideo', '', true)), urlencode(config::byKey('srvPort', 'unifivideo', '', true)), urlencode(config::byKey('apiKey', 'unifivideo', '', true)));
+        $unifivideoServices = new unifivideo();
+        $unifivideoServices->getInfosFromServer(urlencode(config::byKey('isSsl', 'unifivideo', '', true)), urlencode(config::byKey('srvIpAddress', 'unifivideo', '', true)), urlencode(config::byKey('srvPort', 'unifivideo', '', true)), urlencode(config::byKey('apiKey', 'unifivideo', '', true)));
         ajax::success();
     }
 
