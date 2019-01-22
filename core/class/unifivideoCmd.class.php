@@ -16,7 +16,6 @@ class unifivideoCmd extends cmd {
      */
     public function execute($_options = array()) {
         $eqLogic = $this->getEqLogic();
-
         switch ($this->getLogicalId()) {
             case 'takeScreenshot':
                 return $eqLogic->takeScreenshotCmd();
@@ -37,24 +36,5 @@ class unifivideoCmd extends cmd {
                 return $eqLogic->enablePrivacyFilterCmd($_options);
                 break;
         }
-
-//        if ($this->getLogicalId() == 'takeScreenshot') {
-//            return $eqLogic->takeScreenshotCmd();
-//        }
-//        if ($this->getLogicalId() == 'volumeSet') {
-//            return $eqLogic->volumeSetCmd($_options[ 'slider' ]);
-//        }
-//        if ($this->getLogicalId() == 'disableRecordCmd') {
-//            return $eqLogic->disableRecordCmd($_options);
-//        }
-//        if ($this->getLogicalId() == 'enableRecordCmd') {
-//            return $eqLogic->enableRecordCmd();
-//        }
-//        if ($this->getLogicalId() == 'disablePrivacyFilterCmd') {
-//            return $eqLogic->disablePrivacyFilterCmd();
-//        }
-//        if ($this->getLogicalId() == 'enablePrivacyFilterCmd') {
-//            return $eqLogic->enablePrivacyFilterCmd();
-//        }
     }
 }
