@@ -97,7 +97,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                 <form class="form-horizontal">
                     <fieldset>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label">{{Nom de l'équipement virtual}}</label>
+                            <label class="col-sm-2 control-label">{{Nom de l'équipement sous Jeedom}}</label>
                             <div class="col-sm-3">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display : none;" />
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de l'équipement}}"/>
@@ -117,7 +117,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             </div>
                         </div>
                         <div class="form-group expertModeVisible">
-                            <label class="col-sm-2 control-label">{{Camera Name}}</label>
+                            <label class="col-sm-2 control-label">{{Nom de la Caméra (NVR)}}</label>
                             <div class="col-sm-2">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="camName" placeholder="{{Camera Name}}"/>
                             </div>
@@ -126,7 +126,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             </div>
                         </div>
                         <div class="form-group expertModeVisible">
-                            <label class="col-sm-2 control-label">{{Camera Key}}</label>
+                            <label class="col-sm-2 control-label">{{Clé Secrète de la Caméra (NVR)}}</label>
                             <div class="col-sm-2">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="camKey" placeholder="{{Camera Key}}"/>
                             </div>
@@ -140,7 +140,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 <?php
                                 foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
                                     echo '<label class="checkbox-inline">';
-                                    echo '<input type="checkbox" class="eqLogicAttr" data-l1key="category" data-l2key="' . $key . '" />' . $value['name'];
+                                    echo '<input type="checkbox" class="eqLogicAttr" data-l1key="category" data-l2key="' . $key . '" />' . $value[ 'name' ];
                                     echo '</label>';
                                 }
                                 ?>
@@ -160,7 +160,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             <div class="col-sm-9 callback">
         <span>
 	<?php
-    echo network::getNetworkAccess('external') . '/core/api/jeeApi.php?plugin=unifivideo&apikey='.jeedom::getApiKey($plugin->getId()).'&type=unifivideo&id=#cmd_id#&value=#value#';
+    echo network::getNetworkAccess('external') . '/core/api/jeeApi.php?plugin=unifivideo&apikey=' . jeedom::getApiKey($plugin->getId()) . '&type=unifivideo&id=#cmd_id#&value=#value#';
     ?>
 	</span>
                             </div>
@@ -186,5 +186,5 @@ $eqLogics = eqLogic::byType($plugin->getId());
 </div>
 
 
-<?php include_file('desktop', 'unifivideo', 'js', 'unifivideo');?>
-<?php include_file('core', 'plugin.template', 'js');?>
+<?php include_file('desktop', 'unifivideo', 'js', 'unifivideo'); ?>
+<?php include_file('core', 'plugin.template', 'js'); ?>

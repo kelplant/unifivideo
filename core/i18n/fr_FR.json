@@ -1,0 +1,9 @@
+{
+    "plugins\/unifivideo\/plugin_info\/configuration.php": {
+        "Général": "Général",
+        "Adresse IP du serveur": "Adresse IP du serveur",
+        "Port du serveur": "Port du serveur",
+        "Clé API": "Clé API",
+        "Connexion SSL ?": "Connexion SSL ?"
+    }
+}

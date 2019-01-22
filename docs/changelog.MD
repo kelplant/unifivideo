@@ -2,6 +2,13 @@
 
 This is a simple jeedom (http://www.jeedom.com) plugin to manage Ubiquiti Unifi Cameras
 
+## v0.3:            
+- Added Microphone Volume Control (work in progress)
+- Added Snapshot Control Function (work in progress)
+
+> **Tip**
+>snapshots are avaible in the plugin folder under Captures/ Folder
+
 ## v0.2:
 - Added Auto Scan (Auto Add camera from Unifi Video Server)
 
@@ -27,6 +34,4 @@ unifivideo requires [jeedom](https://www.jeedom.com/) v3+ to run.
 Install thought jeedom market or
 
 ```sh
-$ cd plugin
-$ git clone https://github.com/kelplant/unifivideo.git
-```
+$ cd plu
