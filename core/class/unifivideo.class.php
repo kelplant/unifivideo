@@ -7,7 +7,8 @@
  */
 
 require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
-require_once dirname(__FILE__) . '/../../../../vendor/autoload.php';
+require_once dirname(__FILE__) . '/../../vendor/autoload.php';
+require_once dirname(__FILE__) . '/../../core/class/unifivideoCmd.class.php';
 
 /**
  * Class unifivideo
@@ -425,33 +426,3 @@ class unifivideo extends eqLogic {
 }
 
 
-/**
- * Class unifivideoCmd
- */
-class unifivideoCmd extends cmd {
-    /**
-     * @param array $_options
-     * @return bool
-     */
-    public function execute($_options = array()) {
-        $eqLogic = $this->getEqLogic();
-        if ($this->getLogicalId() == 'takeScreenshot') {
-            return $eqLogic->takeScreenshotCmd();
-        }
-        if ($this->getLogicalId() == 'volumeSet') {
-            return $eqLogic->volumeSetCmd($_options[ 'slider' ]);
-        }
-        if ($this->getLogicalId() == 'disableRecordCmd') {
-            return $eqLogic->disableRecordCmd($_options);
-        }
-        if ($this->getLogicalId() == 'enableRecordCmd') {
-            return $eqLogic->enableRecordCmd();
-        }
-        if ($this->getLogicalId() == 'disablePrivacyFilterCmd') {
-            return $eqLogic->disablePrivacyFilterCmd();
-        }
-        if ($this->getLogicalId() == 'enablePrivacyFilterCmd') {
-            return $eqLogic->enablePrivacyFilterCmd();
-        }
-    }
-}
