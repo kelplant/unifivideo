@@ -100,12 +100,14 @@ class unifivideoServices {
      * @param $camKey
      * @param $apiKey
      * @param $camName
+     * @param string $action
      * @return mixed
      */
     public function getSnapshotFromServer($isSsl, $unifiServer, $srvPort, $camKey, $apiKey, $camName, $action = 'current')
     {
         $uri = $this->returnHead($isSsl) . '://' . $unifiServer . ':' . $srvPort . '/api/2.0/snapshot/camera/' . $camKey . '?force=true&apiKey=' . $apiKey;
         $response = $this->getInfosWithCurl($uri, 'undecoded');
+
         if ($_SERVER[ 'PHP_SELF' ] == '/plugins/unifivideo/core/ajax/unifivideo.ajax.php') {
             $repertoire = "../../captures/";
         } else {

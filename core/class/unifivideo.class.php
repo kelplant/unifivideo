@@ -48,6 +48,16 @@ class unifivideo extends eqLogic {
     }
 
     /**
+     * @param $logicalId1
+     * @param $logicalId2
+     * @param $configurationValue
+     */
+    private function updateCmdInfos($logicalId1, $logicalId2, $configurationValue)
+    {
+        $this->getCmd(null, $logicalId1)->setConfiguration('lastCmdValue', $configurationValue)->save();
+        $this->getCmd(null, $logicalId2)->setValue($configurationValue)->save();
+    }
+    /**
      * @param $logicalId
      * @param $commandName
      * @param $type
@@ -93,18 +103,6 @@ class unifivideo extends eqLogic {
         $newCommand->save();
 
         return $newCommand->getId();
-
-    }
-
-    /**
-     * @param $logicalId1
-     * @param $logicalId2
-     * @param $configurationValue
-     */
-    private function updateCmdInfos($logicalId1, $logicalId2, $configurationValue)
-    {
-        $this->getCmd(null, $logicalId1)->setConfiguration('lastCmdValue', $configurationValue)->save();
-        $this->getCmd(null, $logicalId2)->setValue($configurationValue)->save();
     }
 
     /**
