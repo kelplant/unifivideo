@@ -25,7 +25,7 @@ class unifivideoServices {
      * @param $file
      * @param $content
      */
-    private function writeTofile($file, $content)
+    public function writeTofile($file, $content)
     {
         $fp = fopen($file, 'w+');
         fwrite($fp, $content);
@@ -66,31 +66,18 @@ class unifivideoServices {
      * @param $uri
      * @param string $additionalParam
      * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getInfosWithCurl($uri, $additionalParam = 'decoded')
     {
-        $ch = curl_init();
-        $options = array(
-            CURLOPT_URL => $uri,
-            CURLOPT_HEADER => false,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_SSL_VERIFYHOST => 2,
-            CURLOPT_AUTOREFERER    => true, // set referrer on redirect
-            CURLOPT_CONNECTTIMEOUT => 120, // time-out on connect
-            CURLOPT_TIMEOUT        => 120,
-        );
-        curl_setopt_array($ch, $options);
-        $response = curl_exec($ch);
-
+        $client = new \GuzzleHttp\Client(array('curl' => array( CURLOPT_HEADER => false, CURLOPT_SSL_VERIFYHOST => 2, CURLOPT_AUTOREFERER => true, CURLOPT_RETURNTRANSFER => true, CURLOPT_SSL_VERIFYPEER => false ),'verify' => false));
+        $request = $client->request('GET', $uri, [])->getBody();
         if ($additionalParam == 'undecoded') {
-            $e = $response;
-
-        } else {
-            $e = json_decode($response);
+            return $request;
         }
-        curl_close($ch);
-        return $e;
+        if ($additionalParam == 'decoded') {
+            return \GuzzleHttp\json_decode($request);
+        }
     }
 
     /**
@@ -102,6 +89,7 @@ class unifivideoServices {
      * @param $camName
      * @param string $action
      * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getSnapshotFromServer($isSsl, $unifiServer, $srvPort, $camKey, $apiKey, $camName, $action = 'current')
     {

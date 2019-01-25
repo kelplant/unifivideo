@@ -22,12 +22,13 @@ class unifivideo extends eqLogic {
      * @param $secureSSL
      * @return mixed
      * @throws Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getInfosFromServer($isSsl, $unifiServer, $srvPort, $apiKey)
     {
         $uri = 'https://' . $unifiServer . ':' . $srvPort . '/api/2.0/bootstrap?apiKey=' . $apiKey;
         $unifivideoServices = new unifivideoServices();
-        foreach ($unifivideoServices->getInfosWithCurl($uri)->data[ 0 ]->cameras as &$value) {
+        foreach ($unifivideoServices->getInfosWithCurl($uri, 'decoded')->data[ 0 ]->cameras as &$value) {
             $unifivideo = new eqLogic();
             $eqLogic = $unifivideo->byLogicalId($value->_id, 'unifivideo');
             if (!is_object($eqLogic)) {
@@ -71,7 +72,7 @@ class unifivideo extends eqLogic {
      * @return mixed
      * @throws Exception
      */
-    private function addActionOtherCommand($logicalId, $commandName, $type, $subType, $eqLogicId, $icon, $genericType, $order, $visible, $optionalParam = 1)
+    private function addActionOtherCommand($logicalId, $commandName, $type, $subType, $eqLogicId, $icon, $genericType, $order, $visible, $optionalParam = 1, $dashboardTemplate = null, $mobileTemplate = null)
     {
         $newCommand = $this->getCmd(null, $logicalId);
         if (!is_object($newCommand)) {
@@ -92,6 +93,8 @@ class unifivideo extends eqLogic {
         if ($type == 'info' && $subType == 'numeric') {
             $newCommand->setUnite($optionalParam);
         }
+        $newCommand->setTemplate('dashboard', $dashboardTemplate);
+        $newCommand->setTemplate('mobile', $mobileTemplate);
         $newCommand->setIsVisible($visible);
         $newCommand->setType($type);
         $newCommand->setLogicalId($logicalId);
@@ -125,7 +128,8 @@ class unifivideo extends eqLogic {
         $this->addActionOtherCommand('enablePrivacyFilterCmd', 'Démarrer Filtre Confidentialité', 'action', 'other', $this->getId(), '<i class="fa jeedom-volet-ouvert"></i>', 'CAMERA_RECORD', 60, 1, $privacyStateInfoCmdId);
         $volumeStateInfoCmdId = $this->addActionOtherCommand('volumeLevel', 'Volume', 'info', 'numeric', $this->getId(), '<i class="fa jeedom-volet-ouvert"></i>', 'LIGHT_STATE', 70, 0, '%');
         $this->addActionOtherCommand('volumeSet', 'Volume Niveau', 'action', 'slider', $this->getId(), '<i class="fa fa-volume-control-phone"></i>', '', 80, 1, $volumeStateInfoCmdId);
-        $this->addActionOtherCommand('takeScreenshot', 'Prendre une Capture d\'Ecran', 'action', 'other', $this->getId(), '<i class="fa fa-closed-captioning"></i>', 'CAMERA_SCREENSHOT', 90, 1);
+        $lastScreenshot = $this->addActionOtherCommand('lastScreenshot', 'Dernière Capture d\'Ecran', 'info', 'string', $this->getId(), null, null, 100, 1, null, 'unifivideo_lastscreen');
+        $this->addActionOtherCommand('takeScreenshot', 'Prendre une Capture d\'Ecran', 'action', 'other', $this->getId(), '<i class="fa fa-closed-captioning"></i>', 'CAMERA_SCREENSHOT', 90, 1, $lastScreenshot);
     }
 
     /**
@@ -137,10 +141,11 @@ class unifivideo extends eqLogic {
 
     /**
      *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function postSave() {
         $univideoServices = new unifivideoServices();
-        $univideoServices->getSnapshotFromServer(config::byKey('isSsl', 'unifivideo', '', true), config::byKey('srvIpAddress', 'unifivideo', '', true), config::byKey('srvPort', 'unifivideo', '', true), $this->getConfiguration('camKey'), config::byKey('apiKey'), $this->getConfiguration('camName'), 'current');
+        $univideoServices->getSnapshotFromServer(config::byKey('isSsl', 'unifivideo', '', true), config::byKey('srvIpAddress', 'unifivideo', '', true), config::byKey('srvPort', 'unifivideo', '', true), $this->getConfiguration('camKey'), config::byKey('apiKey', 'unifivideo', '', true), $this->getConfiguration('camName'), 'current');
     }
 
     /**
@@ -169,6 +174,40 @@ class unifivideo extends eqLogic {
      */
     public function postRemove() {
 
+    }
+
+    /**
+     * @param string $_version
+     * @return array|mixed
+     * @throws Exception
+     */
+    public function toHtml($_version = 'dashboard')
+    {
+        $replace = $this->preToHtml($_version);
+        if (!is_array($replace)) {
+            return $replace;
+        }
+        $version = jeedom::versionAlias($_version);
+        if ($this->getDisplay('hideOn' . $version) == 1) {
+            return '';
+        }
+        foreach ($this->getCmd('info') as $cmd) {
+            $replace['#' . $cmd->getLogicalId() . '_history#'] = '';
+            $replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
+            $replace['#' . $cmd->getLogicalId() . '#'] = $cmd->execCmd();
+            $replace['#' . $cmd->getLogicalId() . '_collect#'] = $cmd->getCollectDate();
+            $replace['unifivideoWidgetId'] = $this->getId();
+            $replace['#backgroundImg#'] = '/plugins/unifivideo/captures/' . $this->getName() . '_current.jpg';
+
+            if ($cmd->getIsHistorized() == 1) {
+                $replace['#' . $cmd->getLogicalId() . '_history#'] = 'history cursor';
+            }
+        }
+        foreach ($this->getCmd('action') as $cmd) {
+            $replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
+        }
+
+        return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'unifivideo','unifivideo')));
     }
 
     /**
@@ -224,6 +263,7 @@ class unifivideo extends eqLogic {
 
     /**
      * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function takeScreenshotCmd()
     {
