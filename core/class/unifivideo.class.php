@@ -268,7 +268,7 @@ class unifivideo extends eqLogic {
     public function takeScreenshotCmd()
     {
         $univideoServices = new unifivideoServices();
-        $univideoServices->getSnapshotFromServer(urlencode(config::byKey('isSsl', 'unifivideo', '', true)), urlencode(config::byKey('srvIpAddress', 'unifivideo', '', true)), urlencode(config::byKey('srvPort', 'unifivideo', '', true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey', 'unifivideo', '', true)), urlencode($this->getConfiguration('camName')),'full');
+        $univideoServices->getSnapshotFromServer(urlencode(config::byKey('isSsl', 'unifivideo', '', true)), urlencode(config::byKey('srvIpAddress', 'unifivideo', '', true)), urlencode(config::byKey('srvPort', 'unifivideo', '', true)), urlencode($this->getConfiguration('camKey')), urlencode(config::byKey('apiKey', 'unifivideo', '', true)), urlencode($this->getConfiguration('camName')), 'full');
         return true;
     }
 }

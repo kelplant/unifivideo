@@ -110,7 +110,9 @@ class unifivideoServices {
             $dont_show = array("", "php", ".", "..");
             while ($file = readdir($repertoireToFetch)) {
                 $ext = pathinfo($file, PATHINFO_EXTENSION);
-                if (!in_array($ext, $dont_show)) array_push($file_list, substr($file, strlen($camName) + 1, 4));
+                if (!in_array($ext, $dont_show)) {
+                    array_push($file_list, substr($file, strlen($camName) + 1, 4));
+                }
             }
             $this->writeTofile($repertoire . $camName . '/' . $camName . '_' . str_pad(max($file_list) + 1, 4, '0', STR_PAD_LEFT) . '.jpg', $response);
         }
