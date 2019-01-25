@@ -2,6 +2,9 @@
 
 This is a simple jeedom (http://www.jeedom.com) plugin to manage Ubiquiti Unifi Cameras
 
+## v0.4
+- Added Widget (Issue on Volume slider)
+
 ## v0.3:            
 - Added Microphone Volume Control (work in progress)
 - Added Snapshot Control Function (work in progress)

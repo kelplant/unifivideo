@@ -128,7 +128,7 @@ class unifivideo extends eqLogic {
         $this->addActionOtherCommand('enablePrivacyFilterCmd', 'Démarrer Filtre Confidentialité', 'action', 'other', $this->getId(), '<i class="fa jeedom-volet-ouvert"></i>', 'CAMERA_RECORD', 60, 1, $privacyStateInfoCmdId);
         $volumeStateInfoCmdId = $this->addActionOtherCommand('volumeLevel', 'Volume', 'info', 'numeric', $this->getId(), '<i class="fa jeedom-volet-ouvert"></i>', 'LIGHT_STATE', 70, 0, '%');
         $this->addActionOtherCommand('volumeSet', 'Volume Niveau', 'action', 'slider', $this->getId(), '<i class="fa fa-volume-control-phone"></i>', '', 80, 1, $volumeStateInfoCmdId);
-        $lastScreenshot = $this->addActionOtherCommand('lastScreenshot', 'Dernière Capture d\'Ecran', 'info', 'string', $this->getId(), null, null, 100, 1, null, 'unifivideo_lastscreen');
+        $lastScreenshot = $this->addActionOtherCommand('lastScreenshot', 'Dernière Capture d\'Ecran', 'info', 'string', $this->getId(), null, null, 100, 0);
         $this->addActionOtherCommand('takeScreenshot', 'Prendre une Capture d\'Ecran', 'action', 'other', $this->getId(), '<i class="fa fa-closed-captioning"></i>', 'CAMERA_SCREENSHOT', 90, 1, $lastScreenshot);
     }
 
@@ -187,7 +187,8 @@ class unifivideo extends eqLogic {
         if (!is_array($replace)) {
             return $replace;
         }
-        $version = jeedom::versionAlias($_version);
+        $jeedom = new jeedom();
+        $version = $jeedom->versionAlias($_version);
         if ($this->getDisplay('hideOn' . $version) == 1) {
             return '';
         }
