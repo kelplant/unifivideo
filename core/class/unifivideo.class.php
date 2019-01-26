@@ -213,7 +213,7 @@ class unifivideo extends eqLogic {
      */
     public function replaceAction($replace, $cmdLogicalId, $cmdId, $volStateValue, $eqId)
     {
-        $replace[ '#' . $cmdLogicalId . '_id#'] = $cmdId;
+        $replace[ '#' . $cmdLogicalId . '_id#' ] = $cmdId;
         if ($cmdLogicalId == 'volumeSet') {
             $replace[ '#volUid#' ]              = 'eqLogic' . $cmdId . self::UIDDELIMITER . mt_rand() . self::UIDDELIMITER;
             $replace[ '#volId#' ]               = $cmdId;
@@ -245,9 +245,9 @@ class unifivideo extends eqLogic {
         }
         foreach ($this->getCmd('action') as $cmd) {
             $replace = $this->replaceAction($replace, $cmd->getLogicalId(), $cmd->getId(), $this->getCmd('info', 'volumeLevel')->getValue(), $this->getId());
-         }
+        }
 
-        return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'unifivideo','unifivideo')));
+        return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'unifivideo', 'unifivideo')));
     }
 
     /**
