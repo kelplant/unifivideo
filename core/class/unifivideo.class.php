@@ -81,9 +81,10 @@ class unifivideo extends eqLogic {
         }
         if ($type == 'action' && $subType == 'other') {
             $newCommand->setConfiguration('request', '-');
+            $newCommand->setDisplay('icon', $icon);
         }
         if ($type == 'action' && $subType == 'slider') {
-            $newCommand->setConfiguration('minValue', 0);
+            $newCommand->setConfiguration('minValue', 1);
             $newCommand->setConfiguration('maxValue', 100);
         }
         if ($type == 'action') {
@@ -93,6 +94,7 @@ class unifivideo extends eqLogic {
         if ($type == 'info' && $subType == 'numeric') {
             $newCommand->setUnite($optionalParam);
         }
+        if ($type == 'action')
         $newCommand->setTemplate('dashboard', $dashboardTemplate);
         $newCommand->setTemplate('mobile', $mobileTemplate);
         $newCommand->setIsVisible($visible);
@@ -101,7 +103,6 @@ class unifivideo extends eqLogic {
         $newCommand->setEqLogic_id($eqLogicId);
         $newCommand->setSubType($subType);
         $newCommand->setOrder($order);
-        $newCommand->setDisplay('icon', $icon);
         $newCommand->setDisplay('generic_type', $genericType);
         $newCommand->save();
 
@@ -127,7 +128,7 @@ class unifivideo extends eqLogic {
         $this->addActionOtherCommand('disablePrivacyFilterCmd', 'Arrêter Filtre Confidentialité', 'action', 'other', $this->getId(), '<i class="fa jeedom-volet-ferme"></i>', 'CAMERA_STOP', 50, 1, $privacyStateInfoCmdId);
         $this->addActionOtherCommand('enablePrivacyFilterCmd', 'Démarrer Filtre Confidentialité', 'action', 'other', $this->getId(), '<i class="fa jeedom-volet-ouvert"></i>', 'CAMERA_RECORD', 60, 1, $privacyStateInfoCmdId);
         $volumeStateInfoCmdId = $this->addActionOtherCommand('volumeLevel', 'Volume', 'info', 'numeric', $this->getId(), '<i class="fa jeedom-volet-ouvert"></i>', 'LIGHT_STATE', 70, 0, '%');
-        $this->addActionOtherCommand('volumeSet', 'Volume Niveau', 'action', 'slider', $this->getId(), '<i class="fa fa-volume-control-phone"></i>', '', 80, 1, $volumeStateInfoCmdId);
+        $this->addActionOtherCommand('volumeSet', 'Volume Niveau', 'action', 'slider', $this->getId(), null, 'LIGHT_SLIDER', 80, 1, $volumeStateInfoCmdId);
         $lastScreenshot = $this->addActionOtherCommand('lastScreenshot', 'Dernière Capture d\'Ecran', 'info', 'string', $this->getId(), null, null, 100, 0);
         $this->addActionOtherCommand('takeScreenshot', 'Prendre une Capture d\'Ecran', 'action', 'other', $this->getId(), '<i class="fa fa-closed-captioning"></i>', 'CAMERA_SCREENSHOT', 90, 1, $lastScreenshot);
     }
@@ -206,6 +207,14 @@ class unifivideo extends eqLogic {
         }
         foreach ($this->getCmd('action') as $cmd) {
             $replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
+            if ($cmd->getLogicalId() == 'volumeSet') {
+                $replace['#volUid#'] = 'eqLogic' . $cmd->getId() . self::UIDDELIMITER . mt_rand() . self::UIDDELIMITER;
+                $replace['#volId#'] = $cmd->getId();
+                $replace['#volState#'] = $this->getCmd('info', 'volumeLevel')->getValue();
+                $replace['#volMinValue#'] = '1';
+                $replace['#volMaxValue#'] = '100';
+                $replace['#volEqLogicId#'] = $this->getId();;
+            }
         }
 
         return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'unifivideo','unifivideo')));
