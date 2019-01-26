@@ -1,4 +1,4 @@
-# unifivideo [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kelplant/unifivideo/badges/quality-score.png?b=beta)](https://scrutinizer-ci.com/g/kelplant/unifivideo/?branch=beta)[![Build Status](https://scrutinizer-ci.com/g/kelplant/unifivideo/badges/build.png?b=beta)](https://scrutinizer-ci.com/g/kelplant/unifivideo/build-status/beta)[![Code Intelligence Status](https://scrutinizer-ci.com/g/kelplant/unifivideo/badges/code-intelligence.svg?b=beta)](https://scrutinizer-ci.com/code-intelligence)
+# éunifivideo [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kelplant/unifivideo/badges/quality-score.png?b=beta)](https://scrutinizer-ci.com/g/kelplant/unifivideo/?branch=beta)[![Build Status](https://scrutinizer-ci.com/g/kelplant/unifivideo/badges/build.png?b=beta)](https://scrutinizer-ci.com/g/kelplant/unifivideo/build-status/beta)[![Code Intelligence Status](https://scrutinizer-ci.com/g/kelplant/unifivideo/badges/code-intelligence.svg?b=beta)](https://scrutinizer-ci.com/code-intelligence)
 
 Description
 ===========
@@ -72,3 +72,18 @@ Il ne vous reste plus qu'a compléter les informations de la caméra
 - Camera Key : Clé recupérée précédement
 
 ![configuration07](images/configuration07.PNG)
+
+Présentation du Widget
+----------------------
+Le Widget proposé en standard avec les cameras se présente comme suit :
+
+![configuration010](images/configuration10.PNG)
+
+Vous y retrouver la dernière capture d\'écran disponible (l\'ensemble des captures étant sauvegardé dans le repertoire /plugins/unifivideo/captures/{Nom de la Camera}).
+A partir de cette interface il est possible :
+- d\'arrêter les enregistrements ![configuration011](images/configuration11.PNG)
+- de remettre les enregistrements dans le dernier mode activé ![configuration012](images/configuration12.PNG)
+- d\'activer le filtre de confientialité ![configuration015](images/configuration15.PNG)
+- de désactiver le filtre de confientialité ![configuration016](images/configuration16.PNG)
+- de règler le volume de la caméra ![configuration013](images/configuration13.PNG)
+- de prendre une capture d\'écran ![configuration014](images/configuration14.PNG)
