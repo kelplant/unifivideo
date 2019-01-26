@@ -94,7 +94,6 @@ class unifivideo extends eqLogic {
         if ($type == 'info' && $subType == 'numeric') {
             $newCommand->setUnite($optionalParam);
         }
-        if ($type == 'action')
         $newCommand->setTemplate('dashboard', $dashboardTemplate);
         $newCommand->setTemplate('mobile', $mobileTemplate);
         $newCommand->setIsVisible($visible);
@@ -178,6 +177,54 @@ class unifivideo extends eqLogic {
     }
 
     /**
+     * @param $replace
+     * @param $cmdLogicalId
+     * @param $cmdId
+     * @param $cmdExecCmd
+     * @param $cmdgetCollectDate
+     * @param $cmdHistorized
+     * @param $eqId
+     * @param $eqName
+     * @return mixed
+     */
+    public function replaceInfo($replace, $cmdLogicalId, $cmdId, $cmdExecCmd, $cmdgetCollectDate, $cmdHistorized, $eqId, $eqName)
+    {
+        $replace[ '#' . $cmdLogicalId . '_history#' ]     = '';
+        $replace[ '#' . $cmdLogicalId . '_id#' ]          = $cmdId;
+        $replace[ '#' . $cmdLogicalId . '#' ]             = $cmdExecCmd;
+        $replace[ '#' . $cmdLogicalId . '_collect#' ]     = $cmdgetCollectDate;
+        $replace[ 'unifivideoWidgetId' ]                  = $eqId;
+        $replace[ '#backgroundImg#' ]                     = '/plugins/unifivideo/captures/' . $eqName . '_current.jpg';
+
+        if ($cmdHistorized == 1) {
+            $replace[ '#' . $cmdLogicalId . '_history#' ] = 'history cursor';
+        }
+
+        return $replace;
+    }
+
+    /**
+     * @param $replace
+     * @param $cmdLogicalId
+     * @param $cmdId
+     * @param $volStateValue
+     * @param $eqId
+     * @return mixed
+     */
+    public function replaceAction($replace, $cmdLogicalId, $cmdId, $volStateValue, $eqId)
+    {
+        $replace[ '#' . $cmdLogicalId . '_id#'] = $cmdId;
+        if ($cmdLogicalId == 'volumeSet') {
+            $replace[ '#volUid#' ]              = 'eqLogic' . $cmdId . self::UIDDELIMITER . mt_rand() . self::UIDDELIMITER;
+            $replace[ '#volId#' ]               = $cmdId;
+            $replace[ '#volState#' ]            = $volStateValue;
+            $replace[ '#volMinValue#' ]         = '1';
+            $replace[ '#volMaxValue#' ]         = '100';
+            $replace[ '#volEqLogicId#' ]        = $eqId;
+        }
+        return $replace;
+    }
+    /**
      * @param string $_version
      * @return array|mixed
      * @throws Exception
@@ -194,28 +241,11 @@ class unifivideo extends eqLogic {
             return '';
         }
         foreach ($this->getCmd('info') as $cmd) {
-            $replace['#' . $cmd->getLogicalId() . '_history#'] = '';
-            $replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
-            $replace['#' . $cmd->getLogicalId() . '#'] = $cmd->execCmd();
-            $replace['#' . $cmd->getLogicalId() . '_collect#'] = $cmd->getCollectDate();
-            $replace['unifivideoWidgetId'] = $this->getId();
-            $replace['#backgroundImg#'] = '/plugins/unifivideo/captures/' . $this->getName() . '_current.jpg';
-
-            if ($cmd->getIsHistorized() == 1) {
-                $replace['#' . $cmd->getLogicalId() . '_history#'] = 'history cursor';
-            }
+            $replace = $this->replaceInfo($replace, $cmd->getLogicalId(), $cmd->getId(), $cmd->execCmd(), $cmd->getCollectDate(), $cmd->getIsHistorized(), $this->getId(), $this->getName());
         }
         foreach ($this->getCmd('action') as $cmd) {
-            $replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
-            if ($cmd->getLogicalId() == 'volumeSet') {
-                $replace['#volUid#'] = 'eqLogic' . $cmd->getId() . self::UIDDELIMITER . mt_rand() . self::UIDDELIMITER;
-                $replace['#volId#'] = $cmd->getId();
-                $replace['#volState#'] = $this->getCmd('info', 'volumeLevel')->getValue();
-                $replace['#volMinValue#'] = '1';
-                $replace['#volMaxValue#'] = '100';
-                $replace['#volEqLogicId#'] = $this->getId();;
-            }
-        }
+            $replace = $this->replaceAction($replace, $cmd->getLogicalId(), $cmd->getId(), $this->getCmd('info', 'volumeLevel')->getValue(), $this->getId());
+         }
 
         return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'unifivideo','unifivideo')));
     }
