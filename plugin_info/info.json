@@ -3,7 +3,7 @@
   "name": "Unifivideo",
   "licence": "GPL",
   "require": "3.0",
-  "version": "0.3",
+  "version": "0.5",
   "category": "security",
   "hasDependency": false,
   "hasOwnDaemon": false,

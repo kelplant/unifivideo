@@ -6,7 +6,6 @@ $plugin = plugin::byId('unifivideo');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 ?>
-
 <div class="row row-overflow">
     <div class="col-lg-2 col-md-3 col-sm-4">
         <div class="bs-sidebar">
@@ -17,32 +16,19 @@ $eqLogics = eqLogic::byType($plugin->getId());
                 foreach ($eqLogics as $eqLogic) {
                     $opacity = ($eqLogic->getIsEnable()) ? '' : jeedom::getConfiguration('eqLogic:style:noactive');
                     echo '<li class="cursor li_eqLogic" data-eqLogic_id="' . $eqLogic->getId() . '" style="' . $opacity . '"><a>' . $eqLogic->getHumanName(true) . '</a></li>';
-                }
-                ?>
+                }?>
             </ul>
         </div>
     </div>
-
     <div class="col-lg-10 col-md-9 col-sm-8 eqLogicThumbnailDisplay">
         <legend><i class="fa fa-cog"></i> {{Gestion}}</legend>
         <div class="eqLogicThumbnailContainer">
-            <?php
-            if (config::byKey('include_mode', 'unifivideo', 0) == 1) {
-                echo '<div class="cursor changeIncludeState include card" data-mode="1" data-state="0" style="background-color : #ffffff; height : 140px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >';
-                echo '<center class="includeicon">';
-                echo '<i class="fa fa-spinner fa-pulse" style="font-size : 6em;color:red"></i>';
-                echo '</center>';
-                echo '<span class="includeicon_text" style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:red;font-weight: bold;"><center>{{Arrêter Scan}}</center></span>';
-                echo '</div>';
-            } else {
-                echo '<div class="cursor changeIncludeState include card" data-mode="1" data-state="1" style="background-color : #ffffff; height : 140px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >';
-                echo '<center class="includeicon">';
-                echo '<i class="fa fa-bullseye" style="font-size : 6em;color:#94ca02;"></i>';
-                echo '</center>';
-                echo '<span class="includeicon_text" style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#94ca02";font-weight: normal;><center>{{Lancer Scan}}</center></span>';
-                echo '</div>';
-            }
-            ?>
+            <div class="cursor changeIncludeState include card" data-mode="1" data-state="1" style="background-color : #ffffff; height : 140px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;" >
+                <center class="includeicon">
+                    <i class="fa fa-bullseye" style="font-size : 6em;color:#94ca02;"></i>
+                </center>
+                <span class="includeicon_text" style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#94ca02";font-weight: normal;><center>{{Lancer Scan}}</center></span>
+            </div>
             <!-- Bouton d ajout d un objet -->
             <div class="cursor eqLogicAction" data-action="add"
                  style="background-color : #ffffff; height : 140px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
@@ -75,12 +61,9 @@ $eqLogics = eqLogic::byType($plugin->getId());
                 echo "<br>";
                 echo '<span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;">' . $eqLogic->getHumanName(true, true) . '</span>';
                 echo '</div>';
-            }
-            ?>
+            }?>
         </div>
     </div>
-
-
     <div class="col-lg-10 col-md-9 col-sm-8 eqLogic" style="border-left: solid 1px #EEE; padding-left: 25px;display: none;">
         <a class="btn btn-success eqLogicAction pull-right" data-action="save"><i class="fa fa-check-circle"></i> {{Sauvegarder}}</a>
         <a class="btn btn-danger eqLogicAction pull-right" data-action="remove"><i class="fa fa-minus-circle"></i> {{Supprimer}}</a>
@@ -111,8 +94,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                     <?php
                                     foreach (object::all() as $object) {
                                         echo '<option value="' . $object->getId() . '">' . $object->getName() . '</option>';
-                                    }
-                                    ?>
+                                    }?>
                                 </select>
                             </div>
                         </div>
@@ -142,8 +124,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                     echo '<label class="checkbox-inline">';
                                     echo '<input type="checkbox" class="eqLogicAttr" data-l1key="category" data-l2key="' . $key . '" />' . $value[ 'name' ];
                                     echo '</label>';
-                                }
-                                ?>
+                                }?>
                             </div>
                         </div>
                         <div class="form-group">
@@ -153,21 +134,16 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
                             </div>
                         </div>
-
-
                         <div class="form-group">
                             <label class="col-sm-3 control-label">{{URL de retour}}</label>
                             <div class="col-sm-9 callback">
-        <span>
-	<?php
-    echo network::getNetworkAccess('external') . '/core/api/jeeApi.php?plugin=unifivideo&apikey=' . jeedom::getApiKey($plugin->getId()) . '&type=unifivideo&id=#cmd_id#&value=#value#';
-    ?>
-	</span>
+                                <span>
+	                                <?php echo network::getNetworkAccess('external') . '/core/api/jeeApi.php?plugin=unifivideo&apikey=' . jeedom::getApiKey($plugin->getId()) . '&type=unifivideo&id=#cmd_id#&value=#value#'; ?>
+	                            </span>
                             </div>
                         </div>
                     </fieldset>
                 </form>
-
             </div>
             <div role="tabpanel" class="tab-pane" id="commandtab">
                 <table id="table_cmd" class="table table-bordered table-condensed">
@@ -181,7 +157,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
                 </table>
             </div>
         </div>
-
     </div>
 </div>
 

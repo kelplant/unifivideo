@@ -1,0 +1,63 @@
+<style>
+    .footer {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.3);
+        padding: 5px;
+        font-size: 10px;
+        line-height: 10px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+    }
+    .link {
+        text-decoration: none !important;
+        color: white;
+    }
+</style>
+<div class="eqLogic-widget eqLogic allowResize unifivideo unifidiv_#name#" style="background:url('#backgroundImg#');background-size: cover;margin:0;width: 350px;height: 198px;border:#border#;border-radius:#border-radius#;background-color: #background-color#;color: #color#;#style#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#"  data-version="dashboard" >
+    <div><a href="#eqLink#" class="link">#name#</a></div>
+    <div class="footer">
+        <a class="btn cmd" style="display:inline" data-cmd_id="#disableRecordCmd_id#" title="disableRecord" onclick="jeedom.cmd.execute({id: #disableRecordCmd_id#});"><i class="fa fa-stop"></i></a>
+        <a class="btn cmd" style="display:inline" data-cmd_id="#enableRecordCmd_id#" title="enableRecord" onclick="jeedom.cmd.execute({id: #enableRecordCmd_id#});"><i class="fa fa-play"></i></a>
+        <a class="btn cmd" style="display:inline" data-cmd_id="#enablePrivacyFilterCmd_id#" title="enablePrivacy" onclick="jeedom.cmd.execute({id: #enablePrivacyFilterCmd_id#});"><i class="fa jeedom-volet-ferme"></i></a>
+        <a class="btn cmd" style="display:inline" data-cmd_id="#disablePrivacyFilterCmd_id#" title="disablePrivacy" onclick="jeedom.cmd.execute({id: #disablePrivacyFilterCmd_id#});"><i class="fa jeedom-volet-ouvert"></i></a>
+
+        <span class="cmd cmd-widget" data-type="action" data-subtype="slider" data-cmd_id="#volId#" data-cmd_uid="#volUid#" data-version="#volVersion#" data-eqLogic_id="#volEqLogicId#">
+            <div style="display:inline-block;">
+            <div class="slider" style="margin : 10px 10px 5px 10px;width: 60px;" value="#volState#"></div>
+            <span class="value#volUid#" style="display:none; font-weight:bold;position: absolute;z-index: 1;padding: 2px 5px 2px 5px;background: #cmdColor#;border-radius:5px;top: 50%;left: 50%;transform: translate(-50%, 50%);"></span>
+            </div>
+        </span>
+        <a class="btn cmd" style="display:inline" data-cmd_id="#takeScreenshot_id#" title="takeScreenshot" onclick="jeedom.cmd.execute({id: #takeScreenshot_id#}); refreshBackground();"><i class="fa fa-camera"></i></a>
+        </div>
+        <script>
+            $(".cmd[data-cmd_uid=#volUid#] .slider.slider-horizontal").css('z-index',1);
+            jeedom.cmd.update['#volId#'] = function(_options){
+                $(".cmd[data-cmd_id=#volId#] .slider").slider({
+                    min: ('#volMinValue#' == '') ? 0 : parseInt('#volMinValue#'),
+                    max: ('#volMaxValue#' == '') ? 100 : parseInt('#volMaxValue#'),
+                    value: ('#volState#' == '') ? 0 : parseInt(_options.display_value),
+                    slide: function(event, ui) {
+                        $(".value#volUid#").show()
+                        $(".value#volUid#").html(ui.value);
+                    }
+                })
+            }
+            jeedom.cmd.update['#volId#']({display_value:'#volState#'});
+            $(".cmd[data-cmd_uid=#volUid#] .slider").on('slidestop', function (event,ui) {
+                jeedom.cmd.execute({id: '#volId#', value: {slider: ui.value}});
+                $(".value#volUid#").hide();
+            });
+            function refreshBackground() {
+                var randomId = new Date().getTime();
+                document
+                    .getElementsByClassName('unifidiv_#name#')[0]
+                    .style
+                    .backgroundImage = "url('#backgroundImg#?random="+ randomId + "' )";
+            }
+        </script>
+</div>
+
