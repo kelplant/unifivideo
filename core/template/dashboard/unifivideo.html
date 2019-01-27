@@ -31,7 +31,7 @@
             <span class="value#volUid#" style="display:none; font-weight:bold;position: absolute;z-index: 1;padding: 2px 5px 2px 5px;background: #cmdColor#;border-radius:5px;top: 50%;left: 50%;transform: translate(-50%, 50%);"></span>
             </div>
         </span>
-        <a class="btn cmd" style="display:inline" data-cmd_id="#takeScreenshot_id#" title="takeScreenshot" onclick="jeedom.cmd.execute({id: #takeScreenshot_id#}); refreshBackground();"><i class="fa fa-camera"></i></a>
+        <a class="btn cmd" style="display:inline" data-cmd_id="#takeScreenshot_id#" title="takeScreenshot" onclick="jeedom.cmd.execute({id: #takeScreenshot_id#}); refreshBackground_#name#();"><i class="fa fa-camera"></i></a>
         </div>
         <script>
             $(".cmd[data-cmd_uid=#volUid#] .slider.slider-horizontal").css('z-index',1);
@@ -51,7 +51,7 @@
                 jeedom.cmd.execute({id: '#volId#', value: {slider: ui.value}});
                 $(".value#volUid#").hide();
             });
-            function refreshBackground() {
+            function refreshBackground_#name#() {
                 var randomId = new Date().getTime();
                 document
                     .getElementsByClassName('unifidiv_#name#')[0]
